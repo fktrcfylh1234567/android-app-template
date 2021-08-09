@@ -16,6 +16,7 @@ class ExampleInstrumentedTest {
     fun httpbinGet() = runBlocking<Unit> {
         val res = ApiServiceFactory.getServiceApi().get(userId = "fktrc")
         assertTrue(res is Result.Success)
+        assertEquals(Result.Success("fktrc"), res.map { it.args.userId })
 
         res as Result.Success
         Log.d("myLogs", res.data.toString())
