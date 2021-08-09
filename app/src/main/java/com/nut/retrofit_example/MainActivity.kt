@@ -14,10 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel.events.observe(this) {
-            txtTitle.text = it
+        button.setOnClickListener {
+            viewModel.getData().observe(this, txtTitle::setText)
         }
-
-        button.setOnClickListener { viewModel.getData() }
     }
 }
