@@ -17,6 +17,6 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun getDataFromServer() = withContext(Dispatchers.IO) {
-        restApi.getAsync("fktrc")
+        restApi.get("fktrc")
     }
 }

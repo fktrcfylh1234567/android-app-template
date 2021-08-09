@@ -9,13 +9,13 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("get")
-    suspend fun getAsync(
+    suspend fun get(
         @Query(value = "userId") userId: String,
-    ): Response<HttpBinGetResponse>
+    ): Result<HttpBinGetResponse>
 
     @GET("/status/{code}")
-    suspend fun get404Async(
+    suspend fun getStatus(
         @Path("code") code: Int,
         @Query(value = "userId") userId: String,
-    ): Response<HttpBinGetResponse>
+    ): Result<HttpBinGetResponse>
 }
