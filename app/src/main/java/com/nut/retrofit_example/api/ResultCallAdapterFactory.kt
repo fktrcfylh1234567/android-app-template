@@ -1,6 +1,7 @@
 package com.nut.retrofit_example.api
 
 import okhttp3.Request
+import okio.Timeout
 import retrofit2.*
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
