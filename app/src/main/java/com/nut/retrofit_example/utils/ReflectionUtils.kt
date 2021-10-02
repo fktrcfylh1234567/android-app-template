@@ -1,6 +1,6 @@
 package com.nut.retrofit_example.utils
 
-fun Any.fieldsToMap(): Map<String, Any?> {
+internal fun Any.fieldsToMap(): Map<String, Any?> {
     val cls = this::class.java
     val fields = cls.declaredFields
     return fields

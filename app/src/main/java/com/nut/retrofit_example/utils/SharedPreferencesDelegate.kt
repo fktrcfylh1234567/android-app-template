@@ -9,8 +9,15 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 
+/**
+ * Делегат для хранения в хранилище.
+ *
+ * Пример:
+ *
+ * var userId by sharedPreference(application, String::class)
+ */
 fun <T : Any> sharedPreference(context: Context, kClass: KClass<T>): ReadWriteProperty<Any?, T?> =
-    SharedPreferencesDelegate<T>(context, kClass)
+    SharedPreferencesDelegate(context, kClass)
 
 internal class SharedPreferencesDelegate<T : Any>(
     private val context: Context,

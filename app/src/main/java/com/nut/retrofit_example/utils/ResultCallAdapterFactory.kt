@@ -6,13 +6,19 @@ import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
+/**
+ * Тип для резулятатов запроса к RestAPI
+ *
+ * Может принимать значения 3 видов: Success, Failure и NetworkError
+ *
+ */
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()
     data class Failure(val statusCode: Int?) : Result<Nothing>()
     object NetworkError : Result<Nothing>()
 }
 
-abstract class CallDelegate<TIn, TOut>(
+internal abstract class CallDelegate<TIn, TOut>(
     protected val proxy: Call<TIn>
 ) : Call<TOut> {
     override fun execute(): Response<TOut> = throw NotImplementedError()
@@ -28,7 +34,7 @@ abstract class CallDelegate<TIn, TOut>(
     abstract fun cloneImpl(): Call<TOut>
 }
 
-class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy) {
+internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy) {
     override fun enqueueImpl(callback: Callback<Result<T>>) = proxy.enqueue(object : Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             val code = response.code()
@@ -56,14 +62,14 @@ class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy) {
     override fun cloneImpl() = ResultCall(proxy.clone())
 }
 
-class ResultAdapter(
+internal class ResultAdapter(
     private val type: Type
 ) : CallAdapter<Type, Call<Result<Type>>> {
     override fun responseType() = type
     override fun adapt(call: Call<Type>): Call<Result<Type>> = ResultCall(call)
 }
 
-class ResultCallAdapterFactory : CallAdapter.Factory() {
+internal class ResultCallAdapterFactory : CallAdapter.Factory() {
     override fun get(
         returnType: Type,
         annotations: Array<Annotation>,

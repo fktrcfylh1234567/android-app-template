@@ -7,7 +7,7 @@ import com.nut.retrofit_example.utils.MySimpleAdapter
 import kotlinx.android.synthetic.main.activity_main2.*
 
 
-class MainActivity2 : AppCompatActivity() {
+class ListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)

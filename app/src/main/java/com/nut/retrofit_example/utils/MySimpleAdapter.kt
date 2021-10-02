@@ -5,6 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SimpleAdapter
 
+/**
+ * Свой наследник SimpleAdapter, который принимает на вход массив любого data класса и сам раскидывает его по полям
+ *
+ * Пример:
+ *
+ * val data = listOf(Model(1, "one"),Model(2, "two"))
+ *
+ * val mySimpleAdapter = MySimpleAdapter(this, data, R.layout.list_item, Model::class.java)
+ */
 class MySimpleAdapter<T : Any>(
     context: Context,
     private val items: List<T>,

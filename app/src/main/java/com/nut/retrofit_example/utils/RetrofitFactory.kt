@@ -4,6 +4,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Фабрика для создания экземпляров Api на базе интерфейсов
+ */
 object RetrofitFactory {
     fun <T> create(baseUrl: String, service: Class<T>): T {
         val retrofit = getRetrofit(baseUrl)

@@ -4,13 +4,15 @@ import androidx.lifecycle.*
 import com.nut.retrofit_example.api.ApiService
 import com.nut.retrofit_example.utils.Result
 import com.nut.retrofit_example.utils.lazyLiveData
+import com.nut.retrofit_example.utils.sharedPreference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class MainViewModel(private val application: MyApplication) : AndroidViewModel(application) {
+class MainViewModel(application: MyApplication) : AndroidViewModel(application) {
 
     private val restApi: ApiService by inject(ApiService::class.java)
+    private var userId by sharedPreference(application, String::class)
 
     val title: LiveData<String> get() = _title
     private val _title by lazyLiveData<String> {
