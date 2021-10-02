@@ -3,7 +3,7 @@ package com.nut.retrofit_example
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nut.retrofit_example.api.ApiServiceFactory
-import com.nut.retrofit_example.api.Result
+import com.nut.retrofit_example.utils.Result
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test

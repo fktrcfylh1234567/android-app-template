@@ -1,10 +1,8 @@
 package com.nut.retrofit_example.api
 
 import com.nut.retrofit_example.models.HttpBinGetResponse
-import kotlinx.coroutines.Deferred
-import retrofit2.Response
+import com.nut.retrofit_example.utils.Result
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 

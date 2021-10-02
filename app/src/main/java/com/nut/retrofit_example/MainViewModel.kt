@@ -2,7 +2,8 @@ package com.nut.retrofit_example
 
 import androidx.lifecycle.*
 import com.nut.retrofit_example.api.ApiService
-import com.nut.retrofit_example.api.Result
+import com.nut.retrofit_example.utils.Result
+import com.nut.retrofit_example.utils.lazyLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -14,18 +15,12 @@ class MainViewModel : ViewModel() {
     private val restApi: ApiService by inject(ApiService::class.java)
 
     val title: LiveData<String> get() = _title
-    private val _title by lazy {
-        MutableLiveData<String>().apply {
-            loadIpAddress()
-        }
+    private val _title by lazyLiveData<String> {
+        loadIpAddress()
     }
 
     val text: LiveData<String> get() = _text
-    private val _text by lazy {
-        MutableLiveData<String>().apply {
-            loadIpAddress()
-        }
-    }
+    private val _text = MutableLiveData<String>()
 
     val events: LiveData<String> get() = _events
     private val _events = MutableLiveData<String>()
