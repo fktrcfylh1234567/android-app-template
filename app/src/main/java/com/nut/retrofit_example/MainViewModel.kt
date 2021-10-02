@@ -4,10 +4,8 @@ import androidx.lifecycle.*
 import com.nut.retrofit_example.api.ApiService
 import com.nut.retrofit_example.utils.Result
 import com.nut.retrofit_example.utils.lazyLiveData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 
 class MainViewModel : ViewModel() {
@@ -39,16 +37,12 @@ class MainViewModel : ViewModel() {
     }
 
     private fun loadIpAddress(): Job = viewModelScope.launch {
-        val res = getIpAddress()
+        val res = restApi.get()
         if (res !is Result.Success) {
             _events.value = "Ошибка! Не удалось подключиться к серверу."
             return@launch
         }
 
         _title.value = "Your ip address is " + res.data.origin
-    }
-
-    private suspend fun getIpAddress() = withContext(Dispatchers.IO) {
-        restApi.get()
     }
 }
