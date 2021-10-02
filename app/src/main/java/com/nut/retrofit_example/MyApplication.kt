@@ -12,7 +12,7 @@ class MyApplication : Application() {
 
     private val appModule = module {
         viewModel { MainViewModel() }
-        single { ApiServiceFactory.getServiceApi() }
+        single { ApiServiceFactory.getServiceApi("https://httpbin.org/") }
     }
 
     override fun onCreate() {

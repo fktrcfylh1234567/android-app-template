@@ -11,13 +11,6 @@ sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()
     data class Failure(val statusCode: Int?) : Result<Nothing>()
     object NetworkError : Result<Nothing>()
-
-    fun <V> map(block: (T) -> V): Result<V> = when (this) {
-        is Success -> Success(data.let(block))
-        is Failure -> Failure(statusCode)
-        NetworkError -> NetworkError
-    }
-
 }
 
 abstract class CallDelegate<TIn, TOut>(

@@ -1,31 +1,59 @@
 package com.nut.retrofit_example
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.nut.retrofit_example.api.ApiService
 import com.nut.retrofit_example.api.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 
 class MainViewModel : ViewModel() {
 
-    private val _events = MutableLiveData<String>()
-    val events: LiveData<String> get() = _events
-
     private val restApi: ApiService by inject(ApiService::class.java)
 
-    fun getData() = liveData(Dispatchers.IO) {
-        val res = restApi.get("fktrc")
-            .map { "Connected to ${it.url}.\nYour ip is ${it.origin}" }
+    val title: LiveData<String> get() = _title
+    private val _title by lazy {
+        MutableLiveData<String>().apply {
+            loadIpAddress()
+        }
+    }
 
-        val msg = when (res) {
-            is Result.Success -> res.data
+    val text: LiveData<String> get() = _text
+    private val _text by lazy {
+        MutableLiveData<String>().apply {
+            loadIpAddress()
+        }
+    }
+
+    val events: LiveData<String> get() = _events
+    private val _events = MutableLiveData<String>()
+
+    fun sendData(statusCode: Int) = viewModelScope.launch {
+        val res = restApi.getStatus(statusCode, "1234")
+
+        _text.value = when (res) {
+            is Result.Success -> "Server response: ${res.data}"
             is Result.Failure -> "Server response: ${res.statusCode}"
-            Result.NetworkError -> "No connection to server"
+            Result.NetworkError -> {
+                _events.value = "Ошибка! Не удалось подключиться к серверу."
+                return@launch
+            }
+        }
+    }
+
+    private fun loadIpAddress(): Job = viewModelScope.launch {
+        val res = getIpAddress()
+        if (res !is Result.Success) {
+            _events.value = "Ошибка! Не удалось подключиться к серверу."
+            return@launch
         }
 
-        emit(msg)
+        _title.value = "Your ip address is " + res.data.origin
+    }
+
+    private suspend fun getIpAddress() = withContext(Dispatchers.IO) {
+        restApi.get()
     }
 }

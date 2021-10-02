@@ -14,8 +14,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        button.setOnClickListener {
-            viewModel.getData().observe(this, txtTitle::setText)
-        }
+        btnOk.setOnClickListener { viewModel.sendData(201) }
+        btnErr.setOnClickListener { viewModel.sendData(401) }
+
+        viewModel.title.observe(this, txtTitle::setText)
+        viewModel.text.observe(this, txtResult::setText)
+        viewModel.events.observe(this, ::onEvent)
+    }
+
+    private fun onEvent(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
