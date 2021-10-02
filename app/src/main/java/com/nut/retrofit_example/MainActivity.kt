@@ -1,8 +1,8 @@
 package com.nut.retrofit_example
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.nut.retrofit_example.utils.bindToastToLiveData
 import com.nut.retrofit_example.utils.bindViewToLiveData
 import com.nut.retrofit_example.utils.onClick
@@ -23,5 +23,9 @@ class MainActivity : AppCompatActivity() {
 
         btnOk.onClick { viewModel.sendData(201) }
         btnErr.onClick { viewModel.sendData(401) }
+
+        btn.onClick {
+            startActivity(Intent(this, MainActivity2::class.java))
+        }
     }
 }

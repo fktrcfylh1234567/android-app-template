@@ -9,12 +9,13 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 
-fun <T: Any> sharedPreference(context: Context, kClass: KClass<T>) = SharedPreferencesDelegate<T>(context, kClass)
+fun <T : Any> sharedPreference(context: Context, kClass: KClass<T>): ReadWriteProperty<Any?, T?> =
+    SharedPreferencesDelegate<T>(context, kClass)
 
-
-// TODO
-class SharedPreferencesDelegate<T: Any>(private val context: Context, private val kClass: KClass<T>) :
-    ReadWriteProperty<Any?, T?> {
+internal class SharedPreferencesDelegate<T : Any>(
+    private val context: Context,
+    private val kClass: KClass<T>,
+) : ReadWriteProperty<Any?, T?> {
 
     private val gson = Gson()
     private val sPref: SharedPreferences by lazy {
