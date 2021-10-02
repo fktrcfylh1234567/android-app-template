@@ -1,5 +1,6 @@
 package com.nut.retrofit_example
 
+import com.nut.retrofit_example.utils.fieldsToMap
 import org.junit.Test
 
 
@@ -10,10 +11,12 @@ import org.junit.Test
  */
 class ExampleUnitTest {
 
-    var a = 2
+    data class Model(val id: Int, val name: String)
 
     @Test
     fun addition_isCorrect() {
-        ::a.getDelegate()
+        val model = Model(1, "zuzuka")
+        val map = model.fieldsToMap()
+        println(map)
     }
 }
