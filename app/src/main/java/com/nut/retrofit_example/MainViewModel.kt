@@ -8,7 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val application: MyApplication) : AndroidViewModel(application) {
 
     private val restApi: ApiService by inject(ApiService::class.java)
 

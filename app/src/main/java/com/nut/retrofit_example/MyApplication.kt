@@ -12,7 +12,7 @@ import org.koin.dsl.module
 class MyApplication : Application() {
 
     private val appModule = module {
-        viewModel { MainViewModel() }
+        viewModel { MainViewModel(this@MyApplication) }
         single { RetrofitFactory.create("https://httpbin.org/", ApiService::class.java) }
     }
 
