@@ -12,12 +12,17 @@ class ExampleInstrumentedTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private var field by sharedPreference<String>(context)
+    private var field by sharedPreference(context, String::class)
+    private var fieldInt by sharedPreference(context, Int::class)
 
     @Test
     fun sharedPreferenceTest() {
         Log.d("myLogs", field.toString())
         field = "some data"
         Log.d("myLogs", field.toString())
+
+        Log.d("myLogs", fieldInt.toString())
+        fieldInt = 42
+        Log.d("myLogs", fieldInt.toString())
     }
 }
