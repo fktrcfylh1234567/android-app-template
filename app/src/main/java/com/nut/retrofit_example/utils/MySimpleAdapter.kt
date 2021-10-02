@@ -5,43 +5,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SimpleAdapter
 
-class MySimpleAdapter(
+class MySimpleAdapter<T : Any>(
     context: Context,
-    private val data: List<Map<String, *>>,
+    private val items: List<T>,
     resource: Int,
-    from: Array<out String>,
-    to: IntArray,
-) : SimpleAdapter(context, data, resource, from, to) {
+    cls: Class<T>,
+) : SimpleAdapter(context, data(items), resource, from(cls), to(context, cls)) {
 
-    var colorLambda: ((Map<String, *>) -> Int?)? = null
-    var viewLambda: ((Map<String, *>, View) -> Unit)? = null
+    var colorLambda: ((T) -> Int?)? = null
+    var viewLambda: ((T, View) -> Unit)? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = super.getView(position, convertView, parent)
-        val item = data[position]
+        val item = items[position]
 
         colorLambda?.invoke(item)?.let { view.setBackgroundColor(it) }
         viewLambda?.invoke(item, view)
 
         return view
     }
+
+    companion object {
+        private fun <T : Any> data(items: List<T>): List<Map<String, Any?>> {
+            return items.map { it.fieldsToMap() }
+        }
+
+        private fun <T : Any> from(cls: Class<T>): Array<String> {
+            return cls.declaredFields.toList().map { it.name }.toTypedArray()
+        }
+
+        private fun <T : Any> to(context: Context, cls: Class<T>): IntArray {
+            val fields = cls.declaredFields.toList().map { it.name }
+            return fields.map { context.getViewIdByName(it) }.toIntArray()
+        }
+
+        private fun Context.getViewIdByName(name: String): Int {
+            return resources.getIdentifier(name, "id", packageName)
+        }
+    }
 }
 
-fun Any.fieldsToMap(): Map<String, Any?> {
-    val cls = this::class.java
-    val fields = cls.declaredFields
-    return fields
-        .map { field -> field.name to this.getFieldValue(field.name) }
-        .toMap()
-}
-
-private fun Any.getFieldValue(name: String): Any? {
-    val getterName = getterNameForFieldName(name)
-    return this::class.java.declaredMethods
-        .first { it.name.contains(getterName) }
-        .invoke(this)
-}
-
-private fun getterNameForFieldName(name: String): String {
-    return "get" + name.take(1).uppercase() + name.drop(1)
-}

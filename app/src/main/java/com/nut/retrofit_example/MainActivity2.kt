@@ -16,36 +16,25 @@ class MainActivity2 : AppCompatActivity() {
 
     private fun renderList() {
         val data = listOf(
-            mapOf(
-                "key" to "1",
-                "value" to "one",
-            ),
-            mapOf(
-                "key" to "2",
-                "value" to "two",
-            ),
-            mapOf(
-                "key" to "3",
-                "value" to "three",
-            )
+            Model(1, "one"),
+            Model(2, "two"),
+            Model(3, "three"),
         )
 
-        val from = arrayOf("key", "value")
-        val to = intArrayOf(R.id.txtItemText, R.id.txtItemText2)
-
-        val mySimpleAdapter = MySimpleAdapter(this, data, R.layout.list_item, from, to)
+        val mySimpleAdapter = MySimpleAdapter(this, data, R.layout.list_item, Model::class.java)
 
         mySimpleAdapter.colorLambda = {
-            if (it["key"] == "2") getColor(R.color.purple_200) else null
+            if (it.id == 2) getColor(R.color.purple_200) else null
         }
 
         mySimpleAdapter.viewLambda = lambda@{ it, view ->
-            if (it["key"] != "3") return@lambda
-
-            val txt = view.findViewById<TextView>(R.id.txtItemText)
+            if (it.id != 3) return@lambda
+            val txt = view.findViewById<TextView>(R.id.id)
             txt.text = "zuzuka"
         }
 
         linearLayout.adapter = mySimpleAdapter
     }
+
+    data class Model(val id: Int, val name: String)
 }
