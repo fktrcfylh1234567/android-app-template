@@ -17,17 +17,25 @@ class RoomInstrumentedTest {
     fun daoTest() = runBlocking {
         val dao = DatabaseBuilder.getInstance(context).entityDao()
 
-        dao.insert(MyEntity(
+        val id = dao.insert(MyEntity(
             name = "zuzuka",
             email = "zuzuka@zuzuka.ru"
         ))
+        println(id)
 
         val res = dao.getAll()
         println(res)
 
-        dao.deleteAll()
+        val item = dao.getById(id)
+        assert(item != null)
+        assert(item?.id == id)
 
+        dao.deleteById(1)
         val res2 = dao.getAll()
         println(res2)
+
+        dao.deleteAll()
+        val res3 = dao.getAll()
+        assert(res3.isEmpty())
     }
 }
