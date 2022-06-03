@@ -2,12 +2,13 @@ package com.nut.retrofit_example.utils.repo
 
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 
 interface CrudDao<T> {
-    @Insert
-    fun insert(item: T)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(item: T): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMany(items: List<T>)
 
     @Delete
