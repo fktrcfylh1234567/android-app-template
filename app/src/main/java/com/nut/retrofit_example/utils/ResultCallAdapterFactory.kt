@@ -12,10 +12,10 @@ import java.lang.reflect.Type
  * Может принимать значения 3 видов: Success, Failure и NetworkError
  *
  */
-sealed class Result<out T> {
-    data class Success<T>(val data: T) : Result<T>()
-    data class Failure(val statusCode: Int?) : Result<Nothing>()
-    object NetworkError : Result<Nothing>()
+sealed class ResultApi<out T> {
+    data class Success<T>(val data: T) : ResultApi<T>()
+    data class Failure(val statusCode: Int?) : ResultApi<Nothing>()
+    object NetworkError : ResultApi<Nothing>()
 }
 
 internal abstract class CallDelegate<TIn, TOut>(
@@ -34,15 +34,15 @@ internal abstract class CallDelegate<TIn, TOut>(
     abstract fun cloneImpl(): Call<TOut>
 }
 
-internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy) {
-    override fun enqueueImpl(callback: Callback<Result<T>>) = proxy.enqueue(object : Callback<T> {
+internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, ResultApi<T>>(proxy) {
+    override fun enqueueImpl(callback: Callback<ResultApi<T>>) = proxy.enqueue(object : Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             val code = response.code()
 
             val result = if (code in 200 until 300) {
-                response.body()?.let { Result.Success(it) } ?: Result.Failure(code)
+                response.body()?.let { ResultApi.Success(it) } ?: ResultApi.Failure(code)
             } else {
-                Result.Failure(code)
+                ResultApi.Failure(code)
             }
 
             callback.onResponse(this@ResultCall, Response.success(result))
@@ -50,9 +50,9 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
 
         override fun onFailure(call: Call<T>, t: Throwable) {
             val result = if (t is IOException) {
-                Result.NetworkError
+                ResultApi.NetworkError
             } else {
-                Result.Failure(null)
+                ResultApi.Failure(null)
             }
 
             callback.onResponse(this@ResultCall, Response.success(result))
@@ -64,9 +64,9 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
 
 internal class ResultAdapter(
     private val type: Type
-) : CallAdapter<Type, Call<Result<Type>>> {
+) : CallAdapter<Type, Call<ResultApi<Type>>> {
     override fun responseType() = type
-    override fun adapt(call: Call<Type>): Call<Result<Type>> = ResultCall(call)
+    override fun adapt(call: Call<Type>): Call<ResultApi<Type>> = ResultCall(call)
 }
 
 internal class ResultCallAdapterFactory : CallAdapter.Factory() {
@@ -78,7 +78,7 @@ internal class ResultCallAdapterFactory : CallAdapter.Factory() {
         Call::class.java -> {
             val callType = getParameterUpperBound(0, returnType as ParameterizedType)
             when (getRawType(callType)) {
-                Result::class.java -> {
+                ResultApi::class.java -> {
                     val resultType = getParameterUpperBound(0, callType as ParameterizedType)
                     ResultAdapter(resultType)
                 }

@@ -2,7 +2,7 @@ package com.nut.retrofit_example
 
 import androidx.lifecycle.*
 import com.nut.retrofit_example.api.ApiService
-import com.nut.retrofit_example.utils.Result
+import com.nut.retrofit_example.utils.ResultApi
 import com.nut.retrofit_example.utils.lazyLiveData
 import com.nut.retrofit_example.utils.sharedPreference
 import kotlinx.coroutines.Job
@@ -29,9 +29,9 @@ class MainViewModel(application: MyApplication) : AndroidViewModel(application) 
         val res = restApi.getStatus(statusCode, "1234")
 
         _text.value = when (res) {
-            is Result.Success -> "Server response: ${res.data}"
-            is Result.Failure -> "Server response: ${res.statusCode}"
-            Result.NetworkError -> {
+            is ResultApi.Success -> "Server response: ${res.data}"
+            is ResultApi.Failure -> "Server response: ${res.statusCode}"
+            ResultApi.NetworkError -> {
                 _events.value = "Ошибка! Не удалось подключиться к серверу."
                 return@launch
             }
@@ -40,7 +40,7 @@ class MainViewModel(application: MyApplication) : AndroidViewModel(application) 
 
     private fun loadIpAddress(): Job = viewModelScope.launch {
         val res = restApi.get()
-        if (res !is Result.Success) {
+        if (res !is ResultApi.Success) {
             _events.value = "Ошибка! Не удалось подключиться к серверу."
             return@launch
         }
