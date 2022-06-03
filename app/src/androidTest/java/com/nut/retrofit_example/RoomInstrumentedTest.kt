@@ -2,7 +2,8 @@ package com.nut.retrofit_example
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.nut.retrofit_example.db.DatabaseBuilder
+import com.nut.retrofit_example.db.AppDatabase
+import com.nut.retrofit_example.utils.repo.DatabaseBuilder
 import com.nut.retrofit_example.db.MyEntity
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -15,7 +16,7 @@ class RoomInstrumentedTest {
 
     @Test
     fun daoTest() = runBlocking {
-        val dao = DatabaseBuilder.getInstance(context).entityDao()
+        val dao = DatabaseBuilder.getInstance(context, AppDatabase::class.java).entityDao()
 
         val id = dao.insert(MyEntity(
             name = "zuzuka",
